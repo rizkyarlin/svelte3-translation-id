@@ -1,123 +1,123 @@
-# Словарь терминов Svelte
+# Daftar Istilah Svelte
 
-Оглавление: [0-9](#0-9) [A](#a) [B](#b) [C](#c) [D](#d) [E](#e) [F](#f) [G](#g) [H](#h) [I](#i) [J](#j) [K](#k) [L](#l) [M](#m) [N](#n) [O](#o) [P](#p) [Q](#q) [R](#r) [S](#s) [T](#t) [U](#u) [V](#v) [W](#w) [X](#x) [Y](#y) [Z](#z)
+Daftar isi: [0-9](#0-9) [A](#a) [B](#b) [C](#c) [D](#d) [E](#e) [F](#f) [G](#g) [H](#h) [I](#i) [J](#j) [K](#k) [L](#l) [M](#m) [N](#n) [O](#o) [P](#p) [Q](#q) [R](#r) [S](#s) [T](#t) [U](#u) [V](#v) [W](#w) [X](#x) [Y](#y) [Z](#z)
 
 ## a
-*action* — действие
+*action* — aksi
 
-*accessor* — аксессор
+*accessor* — aksesor
 
 ## b
 
-*behaviours* — поведение
+*behaviours* — perilaku
 
-*binding* — привязка
+*binding* — pengikatan
 
-*building*  — сборка 
+*building*  — pembangunan 
 
-*bundle* — бандл
+*bundle* — bundel
 
-*bundler* — сборщик
+*bundler* — pembundel
 
 ## c
-*component* — компонент
+*component* — komponen
 
-*computed* — вычисляемый
+*computed* — terhitung
 
-*сustom element* — пользовательский элемент
+*сustom element* — elemen kustom
 
-*сustom method* — пользовательский метод
+*сustom method* — metode kustom
 
-*сustom transition* — пользовательский переход
+*сustom transition* — transisi kustom
 
 ## d
-*derived store* — производное хранилище
+*derived store* — penyimpanan turunan
 
-*directive* — директива
+*directive* — direktif
 
 ## e
-*event* — событие
+*event* — event
 
-*event dispatcher* — диспетчер событий
+*event dispatcher* — pengirim event
 
-*event forwarding* — проброс события
+*event forwarding* — penerusan event
 
-*event handler* — обработчик события
+*event handler* — pawang event
 
-*event listener* — прослушиватель события
+*event listener* — pendengar event
 
 ## f
-*fire event* — вызвать событие
+*fire event* — luncurkan event
 
 ## h
-*hydration* — гидратация
+*hydration* — hidrasi
 
 ## i
-*immutable* — неизменяемый
+*immutable* — tak berubah
 
-*inline handler* — встроенный обработчик
+*inline handler* — handler barisan
 
 ## l
-*layout* — макет
+*layout* — tata letak
 
-*lifecycle function* — функция жизненного цикла
+*lifecycle function* — fungsi lifecycle
 
-*lifecycle hook* — хук жизненного цикла
+*lifecycle hook* — kait lifecycle
 
 ## m
-*markup* — разметка
+*markup* — markup
 
 ## n
-*nested* — вложенный
+*nested* — bersarang
 
 ## p
-*prefetch loading* — упреждающая загрузка 
+*prefetch loading* — jemput muatan 
 
-*preloading* — предзагрузка 
+*preloading* — pramuatan 
 
-*preprocess* — препроцесс 
+*preprocess* — praproses
 
-*promise* — промис
+*promise* — promise
 
-*property*,*prop* — свойство
+*property*,*prop* — properti
 
-*proxy* — прокси
+*proxy* — proxy
 
 ## r
-*reactive assignment* — реактивные присваивание
+*reactive assignment* — penugasan reaktif
 
-*reactive declaration* — реактивные объявление
+*reactive declaration* — deklarasi reaktif
 
-*reactive statement* — реактивное выражение
+*reactive statement* — pernyataan reaktif
 
-*route*,*routing* — маршрут, маршрутизация
+*route*,*routing* — rute
 
 ## s
-*scoped styles* — изолированные стили
+*scoped styles* — gaya tercakup
 
-*server route* — серверный маршрут
+*server route* — rute server
 
-*service-worker* — сервис-воркер
+*service-worker* — service-worker
 
-*special element* — специальный элемент
+*special element* — elemen spesial
 
-*spread properties* — развертка свойств
+*spread properties* — properti tersebar
 
-*state*,*internal state* — состояние, внутреннее состояние
+*state*,*internal state* — status, status internal
 
-*state management* — управление состоянием
+*state management* — manajemen status
 
-*static* — статика
+*static* — statik
 
-*store* — хранилище
+*store* — store
 
 ## t
-*tag* — тег
+*tag* — tag
 
-*template* — шаблон
+*template* — templat
 
-*transition* — переход
+*transition* — transisi
 
-*transition in* — переход появления
+*transition in* — transisi masuk
 
-*transition out* — переход исчезновения
+*transition out* — transisi keluar
