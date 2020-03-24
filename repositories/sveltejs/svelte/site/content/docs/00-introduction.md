@@ -1,9 +1,9 @@
 ---
-title: Важное замечание
+title: Before we begin
 ---
 
-Этот раздел содержит подробную справочную документацию по API. Он предназначен для людей, которые уже знакомы с Svelte.
+This page contains detailed API reference documentation. It's intended to be a resource for people who already have some familiarity with Svelte.
 
-Если вы ещё не успели познакомиться с нашим фреймворком, сделайте это в [интерактивном Учебнике](tutorial) или посмотрите [примеры](examples) — тогда эта документация может оказаться более полезной для вас.
+If that's not you (yet), you may prefer to visit the [interactive tutorial](tutorial) or the [examples](examples) before consulting this reference.
 
-Не стесняйтесь просить помощи в [чате Discord](chat) или в русскоязычном Telegram-канале [@sveltejs](https://t.me/sveltejs). 
+Don't be shy about asking for help in the [Discord chatroom](chat).

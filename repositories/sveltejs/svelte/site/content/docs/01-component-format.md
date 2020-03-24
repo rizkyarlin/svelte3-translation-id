@@ -1,212 +1,209 @@
 ---
-title: Формат компонента
+title: Component format
 ---
 
 ---
 
-Компоненты — это строительные кирпичики любого приложения на фреймворке Svelte. Они описываются в файлах с расширением `.svelte` при помощи надмножества языка разметки HTML.
+Components are the building blocks of Svelte applications. They are written into `.svelte` files, using a superset of HTML.
 
-Все три части — script, style и разметка — не являются обязательными.
+All three sections — script, styles and markup — are optional.
 
 ```html
 <script>
-	// логика описывается здесь
+	// logic goes here
 </script>
 
 <style>
-	/* стили должны быть здесь */
+	/* styles go here */
 </style>
 
-<!-- разметка (0 или более элементов) помещается здесь -->
+<!-- markup (zero or more items) goes here -->
 ```
 
 ### &lt;script&gt;
 
-Блок `<script>` содержит JavaScript, который запускается при создании экземпляра компонента. Переменные, объявленные (или импортированные) в этом блоке, 'видны' из разметки компонента. Есть ещё четыре дополнительных правила:
+A `<script>` block contains JavaScript that runs when a component instance is created. Variables declared (or imported) at the top level are 'visible' from the component's markup. There are four additional rules:
 
-##### 1. `export` объявляет свойство компонента
+##### 1. `export` creates a component prop
 
 ---
 
-Svelte использует ключевое слово `export`, чтобы пометить объявление переменной как *свойство*, что означает, что оно становится доступным извне всему, что будет использовать этот компонент (см. раздел [Атрибуты и свойства](docs#Atributy_i_svojstva) для дополнительной информации).
+Svelte uses the `export` keyword to mark a variable declaration as a *property* or *prop*, which means it becomes accessible to consumers of the component (see the section on [attributes and props](docs#Attributes_and_props) for more information).
 
 ```html
 <script>
 	export let foo;
 
-	// Значения переменных, объявленных как свойства,
-	// доступны сразу же
+	// Values that are passed in as props
+	// are immediately available
 	console.log({ foo });
 </script>
 ```
 
 ---
-Можно указать значение по умолчанию, которое будет использоваться, в случае когда потребитель компонента задаст это свойство.
-В режиме разработки (см. [параметры компиляции](docs#svelte_compile)), если потребитель не укажет значения свойства и, при этом не будет значения по умолчанию, будет показано предупреждение об ошибке. Чтобы оно не появлялось, убедитесь, что для свойства задано значение по умолчанию, даже если оно равно `undefined`.
+
+You can specify a default initial value for a prop. It will be used if the component's consumer doesn't specify the prop on the component (or if its initial value is `undefined`) when instantiating the component. Note that whenever a prop is removed by the consumer, its value is set to `undefined` rather than the initial value.
+
+In development mode (see the [compiler options](docs#svelte_compile)), a warning will be printed if no default initial value is provided and the consumer does not specify a value. To squelch this warning, ensure that a default initial value is specified, even if it is `undefined`.
 
 ```html
 <script>
-	export let bar = 'необязательное значение по умолчанию';
+	export let bar = 'optional default initial value';
 	export let baz = undefined;
 </script>
 ```
 
 ---
 
-При экспорте свойств заданных ключевыми словами `const`, `class` или `function`, снаружи они будут доступны только для чтения. В то же время, *функциональные выражения* являются обычными свойствами.
-
+If you export a `const`, `class` or `function`, it is readonly from outside the component. Function *expressions* are valid props, however.
 
 ```html
 <script>
-	// доступны только для чтения
+	// these are readonly
 	export const thisIs = 'readonly';
 
 	export function greet(name) {
 		alert(`hello ${name}!`);
 	}
 
-	// обычное свойство
+	// this is a prop
 	export let format = n => n.toFixed(2);
 </script>
 ```
 
 ---
 
-Есть возможность использовать зарезервированные слова в качестве имен свойств.
+You can use reserved words as prop names.
 
 ```html
 <script>
 	let className;
 
-	// создает свойство с именем  `class`, 
-	// которое является зарезервированным словом в JS
+	// creates a `class` property, even
+	// though it is a reserved word
 	export { className as class };
 </script>
 ```
 
-##### 2. Присваивания 'реактивны'
+##### 2. Assignments are 'reactive'
 
 ---
 
-Чтобы изменить состояние компонента и запустить его перерисовку, просто присвойте что-либо переменной, объявленной локально.
+To change component state and trigger a re-render, just assign to a locally declared variable.
 
-Присваивания с обновлением (`count += 1`) и присваивания свойствам (`obj.x = y`) будут иметь тот же эффект.
+Update expressions (`count += 1`) and property assignments (`obj.x = y`) have the same effect.
 
-Поскольку реактивность Svelte основана на присваиваниях, использование таких методов массива, как `.push()` и `.splice()`, не приведёт к автоматическому обновлению. Но вы можете узнать в [учебнике](tutorial/updating-arrays-and-objects), как обойти это ограничение.
+Because Svelte's reactivity is based on assignments, using array methods like `.push()` and `.splice()` won't automatically trigger updates. Options for getting around this can be found in the [tutorial](tutorial/updating-arrays-and-objects).
 
 ```html
 <script>
 	let count = 0;
 
 	function handleClick () {
-		// вызов этой функции приведёт к обновлению компонента,
-		// если в разметке есть ссылка на `count`
+		// calling this function will trigger an
+		// update if the markup references `count`
 		count = count + 1;
 	}
 </script>
 ```
 
-##### 3. `$:` делает выражение реактивным
+##### 3. `$:` marks a statement as reactive
 
 ---
 
-Любое выражение на верхнем уровне (то есть, не внутри блока или функции) можно сделать реактивным, добавив перед ним [JS метку](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/label) `$:`. Реактивные выражения запускаются непосредственно перед обновлением компонента всякий раз, когда изменяются значения переменных, которые в него входят.
+Any top-level statement (i.e. not inside a block or a function) can be made reactive by prefixing it with the `$:` [JS label syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label). Reactive statements run immediately before the component updates, whenever the values that they depend on have changed.
 
 ```html
 <script>
 	export let title;
 
-	// это выражение будет обновлять `document.title` каждый раз,
-	// когда свойство `title` изменится
+	// this will update `document.title` whenever
+	// the `title` prop changes
 	$: document.title = title;
 
 	$: {
-		console.log(`можно объединить в блок несколько выражений`);
-		console.log(`текущий заголовок: ${title}`);
+		console.log(`multiple statements can be combined`);
+		console.log(`the current title is ${title}`);
 	}
 </script>
 ```
 
 ---
 
-Если выражением является только присваивание значения ранее не объявленной переменной, Svelte самостоятельно объявит такую переменную через оператор `let`.
+If a statement consists entirely of an assignment to an undeclared variable, Svelte will inject a `let` declaration on your behalf.
 
 ```html
 <script>
 	export let num;
 
-	// нет необходимости объявлять `squared` и `cubed`,
-	// Svelte сделает это за нас
+	// we don't need to declare `squared` and `cubed`
+	// — Svelte does it for us
 	$: squared = num * num;
 	$: cubed = squared * num;
 </script>
 ```
 
-##### 4. Добавьте префикс `$` к хранилищу для получения его значения
+##### 4. Prefix stores with `$` to access their values
 
 ---
-Хранилищем является любой объект, который допускает реактивный доступ к своему значению посредством так называемого *контракта хранилища*.
 
-[Модуль `svelte/store`](docs#svelte_store) содержит минимальную реализацию хранилищ, соответствующих такому контракту. 
+A *store* is an object that allows reactive access to a value via a simple *store contract*. The [`svelte/store` module](docs#svelte_store) contains minimal store implementations which fulfil this contract.
 
-Каждый раз, когда вам нужно взять значение из хранилища, вы можете вы можете сделать это, поместив перед ним префикс с символом `$`. Это говорит Svelte, что нужно объявить переменную с префиксом и подписаться на хранилище с автоматическим удалением подписки при необходимости.
+Any time you have a reference to a store, you can access its value inside a component by prefixing it with the `$` character. This causes Svelte to declare the prefixed variable, and set up a store subscription that will be unsubscribed when appropriate.
 
-Присваивание значений переменным с префиксом `$` требует, чтобы эти переменные являлись записываемыми хранилищами, и приведёт к вызову метода хранилища `.set`.
+Assignments to `$`-prefixed variables require that the variable be a writable store, and will result in a call to the store's `.set` method.
 
-Обратите внимание, что хранилище должно быть объявлено на верхнем уровне компонента, а не, например, внутри функции или блока `if`.
+Note that the store must be declared at the top level of the component — not inside an `if` block or a function, for example.
 
-Локальные переменные (которые не являются ссылкой на хранилище) *не должны* иметь префикс `$`.
+Local variables (that do not represent store values) must *not* have a `$` prefix.
 
 ```html
 <script>
 	import { writable } from 'svelte/store';
 
 	const count = writable(0);
-	console.log($count); // выведет 0
+	console.log($count); // logs 0
 
 	count.set(1);
-	console.log($count); // выведет 1
+	console.log($count); // logs 1
 
 	$count = 2;
-	console.log($count); // выведет 2
+	console.log($count); // logs 2
 </script>
 ```
 
-##### Контракт хранилища
+##### Store contract
 
 ```js
 store = { subscribe: (subscription: (value: any) => void) => () => void, set?: (value: any) => void }
 ```
 
-Вы можете создавать собственные варианты хранилищ, без участия [`svelte/store`](docs#svelte_store), реализовав *контракт хранилища*:
+You can create your own stores without relying on [`svelte/store`](docs#svelte_store), by implementing the *store contract*:
 
-1. Хранилище обязано иметь метод `.subscribe`, который должен принимать в качестве аргумента функцию подписки. При вызове этого метода, сразу же синхронно должна быть вызвана функция подписки, с передачей ей текущего значения хранилища. Далее все полученные функции подписки должны синхронно вызываться при любом изменении значения хранилища.
-2. Метод `.subscribe` должен возвращать функцию отмены подписки. Вызов функции отмены должен привезти к тому, что соответствующая функция подписки более не должна вызываться хранилищем.
-3. *По желанию*, хранилище может иметь метод  `.set`, который должен принимать параметром новое значение для хранилища и синхронно вызывать все активные функции подписки. Такое хранилище называется *записываемым хранилищем*. 
+1. A store must contain a `.subscribe` method, which must accept as its argument a subscription function. This subscription function must be immediately and synchronously called with the store's current value upon calling `.subscribe`. All of a store's active subscription functions must later be synchronously called whenever the store's value changes.
+2. The `.subscribe` method must return an unsubscribe function. Calling an unsubscribe function must stop its subscription, and its corresponding subscription function must not be called again by the store.
+3. A store may *optionally* contain a `.set` method, which must accept as its argument a new value for the store, and which synchronously calls all of the store's active subscription functions. Such a store is called a *writable store*.
 
-Для обеспечения совместимости с RxJS Observables метод `.subscribe` может возвращать объект с методом ` .unsubscribe`, вместо непосредственно функции отписки. Но если метод `.subscribe` вызывает подписку асинхронно(спецификация Observable это допускает), Svelte будет видеть значение хранилища как `undefined`, пока вызов не завершится.
-
----
+For interoperability with RxJS Observables, the `.subscribe` method is also allowed to return an object with an `.unsubscribe` method, rather than return the unsubscription function directly. Note however that unless `.subscribe` synchronously calls the subscription (which is not required by the Observable spec), Svelte will see the value of the store as `undefined` until it does.
 
 
 ### &lt;script context="module"&gt;
 
 ---
 
-Блок `<script>` с атрибутом `context="module"` выполняется только один раз при первичной обработке модуля, а не при каждой инициализации экземпляров компонента. Значения, объявленные в этом блоке, доступны в разметке компонента и в обычном блоке `<script>`(но не наоборот).
+A `<script>` tag with a `context="module"` attribute runs once when the module first evaluates, rather than for each component instance. Values declared in this block are accessible from a regular `<script>` (and the component markup) but not vice versa.
 
-Все, что экспортируется из такого блока с помощью оператора `export`, становится экспортом из самого скомпилированного  модуля.
+You can `export` bindings from this block, and they will become exports of the compiled module.
 
-Вы не сможете сделать `export default`, поскольку экспортом по умолчанию является сам компонент.
+You cannot `export default`, since the default export is the component itself.
 
-> Переменные, объявленные в блоке `context="module"`, не являются реактивными, поэтому присваивание им новых значений не будет приводить к перерисовке компонента, хоть сами переменные и обновятся. Для значений, которые предполагается использовать в нескольких компонентах, лучше использовать [хранилища](docs#svelte_store).
-
+> Variables defined in `module` scripts are not reactive — reassigning them will not trigger a rerender even though the variable itself will update. For values shared between multiple components, consider using a [store](docs#svelte_store).
 
 ```html
 <script context="module">
 	let totalComponents = 0;
 
-	// такая запись позволит импортировать в нужном месте эту функцию:
+	// this allows an importer to do e.g.
 	// `import Example, { alertTotal } from './Example.svelte'`
 	export function alertTotal() {
 		alert(totalComponents);
@@ -215,7 +212,7 @@ store = { subscribe: (subscription: (value: any) => void) => () => void, set?: (
 
 <script>
 	totalComponents += 1;
-	console.log(`для этого компонента было создано ${totalComponents} экземпляр(ов)`);
+	console.log(`total number of times this component has been created: ${totalComponents}`);
 </script>
 ```
 
@@ -224,14 +221,14 @@ store = { subscribe: (subscription: (value: any) => void) => () => void, set?: (
 
 ---
 
-CSS стили внутри блока `<style>` будут изолированы внутри данного компонента.
+CSS inside a `<style>` block will be scoped to that component.
 
-Это достигается путём добавления класса ко всем затронутым элементам, имя которого получено хэш-функцией из стилей компонента (например, `svelte-123xyz`).
+This works by adding a class to affected elements, which is based on a hash of the component styles (e.g. `svelte-123xyz`).
 
 ```html
 <style>
 	p {
-		/* это затронет только элемент <p> в этом компоненте */
+		/* this will only affect <p> elements in this component */
 		color: burlywood;
 	}
 </style>
@@ -239,19 +236,19 @@ CSS стили внутри блока `<style>` будут изолирован
 
 ---
 
-Для применения стиля к селектору глобально, используйте модификатор `:global(...)`.
+To apply styles to a selector globally, use the `:global(...)` modifier.
 
 ```html
 <style>
 	:global(body) {
-		/* этот стиль для <body> */
+		/* this will apply to <body> */
 		margin: 0;
 	}
 
 	div :global(strong) {
-		/* этот стиль будет применяться ко всем элементам <strong> 
-		   в любом компоненте, который находится внутри 
-	       элементов <div> данного компонента */
+		/* this will apply to all <strong> elements, in any
+			 component, that are inside <div> elements belonging
+			 to this component */
 		color: goldenrod;
 	}
 </style>
@@ -259,9 +256,9 @@ CSS стили внутри блока `<style>` будут изолирован
 
 ---
 
-Если требуется сделать глобальной анимацию @keyframes, добавьте к имени анимации префикс `-global-`.
+If you want to make @keyframes that are accessible globally, you need to prepend your keyframe names with `-global-`.
 
-Часть имени `-global-` будет удалена при компиляции, и вы сможете обратиться к анимации просто по имени `my-animation-name` в любом месте вашего кода.
+The `-global-` part will be removed when compiled, and the keyframe then be referenced using just `my-animation-name` elsewhere in your code.
 
 ```html
 <style>
